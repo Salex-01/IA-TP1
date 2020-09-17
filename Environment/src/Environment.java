@@ -48,6 +48,10 @@ public class Environment extends Thread {
             if (d < pJewel) {
                 generate(map, Constants.JEWEL);
             }
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ignored) {
+            }
         }
         bot.sStop();
     }

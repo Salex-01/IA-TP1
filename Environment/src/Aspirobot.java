@@ -2,12 +2,14 @@ public class Aspirobot extends Thread {
     Sensors sensors;
     Effectors effectors;
     int[][] beliefs;
+    int posX = 0;
+    int posY = 0;
 
     boolean stopped = false;
 
     public Aspirobot(Environment e) {
         sensors = new Sensors(e);
-        effectors = new Effectors(e);
+        effectors = new Effectors(e,this);
         this.start();
     }
 
