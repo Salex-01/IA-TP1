@@ -6,7 +6,7 @@ public class Aspirobot extends Thread {
     boolean stopped = false;
 
     public Aspirobot(Environment e) {
-        sensors = new Sensors(e);
+        sensors = new Sensors(this, e);
         effectors = new Effectors(e);
         this.start();
     }
