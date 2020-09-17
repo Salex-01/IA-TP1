@@ -8,16 +8,20 @@ public class Aspirobot extends Thread {
     boolean stopped = false;
 
     public Aspirobot(Environment e) {
-        sensors = new Sensors(this, e);
-        effectors = new Effectors(e,this);
+        sensors = new Sensors(e, this);
+        effectors = new Effectors(e, this);
         this.start();
     }
 
     @Override
     public void run() {
         while (!stopped) {
-
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ignored) {
+            }
         }
+        System.out.println("Stopped");
     }
 
     public void sStop() {
