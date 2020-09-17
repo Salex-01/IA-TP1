@@ -42,14 +42,24 @@ public class Environment extends Thread {
         while (!stopped) {
             double d = Math.abs(r.nextDouble()) % 1.0;
             if (d < pDust) {
-                generateDust(map);
+                generate(map, Constants.DUST);
             }
             d = Math.abs(r.nextDouble()) % 1.0;
             if (d < pJewel) {
-                generateJewel(map);
+                generate(map, Constants.JEWEL);
             }
         }
         bot.sStop();
+    }
+
+    private void generate(int[][] map, int type) {
+        int x;
+        int y;
+        do {
+            x = Math.abs(r.nextInt()) % width;
+            y = Math.abs(r.nextInt()) % height;
+        } while ((map[y][x] & type) != 0);
+        map[y][x] |= type;
     }
 
     public void sStop() {
