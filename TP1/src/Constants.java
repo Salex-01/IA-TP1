@@ -2,8 +2,8 @@ public class Constants {
     static final int DUST = 1;
     static final int JEWEL = 2;
 
-    static final int electricityCost = 1;
-    static final int jewelCost = 1000;
+    static int electricityCost = 1;
+    static int jewelCost = 1000;
 
     static final char UP = 'u';
     static final char DOWN = 'd';
