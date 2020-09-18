@@ -1,9 +1,9 @@
 public class Node {
-    State state;
+    TreeState treeState;
     Character t;
 
-    public Node(State s, char t1) {
-        state = s;
+    public Node(TreeState s, char t1) {
+        treeState = s;
         t = t1;
     }
 }
