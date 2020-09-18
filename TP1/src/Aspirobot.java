@@ -1,12 +1,25 @@
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.function.Function;
 
 public class Aspirobot extends Thread {
     Sensors sensors;
     Effectors effectors;
-    int[][] beliefs;
     int posX = 0;
     int posY = 0;
+
+    int[][] beliefs;
+
+    Function<TreeState, Boolean> desires = state -> {
+        for (int i = 0; i < state.map.length; i++) {
+            for (int j = 0; j < state.map[0].length; j++) {
+                if ((state.map[i][j] & Constants.DUST) != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
 
     boolean stopped = false;
 
@@ -22,44 +35,23 @@ public class Aspirobot extends Thread {
 
     @Override
     public void run() {
+        LinkedList<Character> intentions;
         while (!stopped) {
-            Random r;
-            r = new Random();
-            int rand = Math.abs(r.nextInt()) % 3;
-            if (rand == 0) {
-                int tmp = Math.abs(r.nextInt()) % 4;
-                if (tmp == 0) {
-                    if (this.posY > 0) {
-                        this.effectors.move('u');
-                    }
+            sensors.look();
+            intentions = decide();
+            for (char c : intentions) {
+                switch (c) {
+                    case Constants.SUCK:
+                        effectors.suck();
+                        break;
+                    case Constants.PICK:
+                        effectors.pick();
+                        break;
+                    default:
+                        effectors.move(c);
+                        break;
                 }
-                else if (tmp == 1) {
-                    if (this.posY < sensors.e.height - 1) {
-                        this.effectors.move('d');
-                    }
-                }
-                else if (tmp == 2) {
-                    if (this.posX > 0) {
-                        this.effectors.move('l');
-                    }
-                }
-                else {
-                    if (this.posX < sensors.e.width - 1) {
-                        this.effectors.move('r');
-                    }
-                }
-                System.out.println("move : " + this.effectors.e.score + "\n");
-                System.out.println("posX : " + this.posX + " posY : " + this.posY + "\n");
             }
-            else if (rand == 1) {
-                System.out.println("pick : " + this.effectors.e.score + "\n");
-                this.effectors.pick();
-            }
-            else {
-                System.out.println("suck : " + this.effectors.e.score + "\n");
-                this.effectors.suck();
-            }
-
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ignored) {
