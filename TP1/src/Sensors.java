@@ -11,7 +11,7 @@ public class Sensors {
         bot.beliefs = e.map.clone();
     }
 
-    public int score() {
+    public double score() {
         return e.score;
     }
 }

@@ -5,7 +5,7 @@ public class Environment extends Thread {
     int width = 5;
     int[][] map;
     Aspirobot bot;
-    int score = 0;
+    double score = 0;
     double pDust;
     double pJewel;
     Random r = new Random();
@@ -26,6 +26,12 @@ public class Environment extends Thread {
                     break;
                 case "j":
                     pJewel = Double.parseDouble(args[i + 1]);
+                    break;
+                case "ec":
+                    Constants.electricityCost = Double.parseDouble(args[i + 1]);
+                    break;
+                case "jc":
+                    Constants.jewelCost = Double.parseDouble(args[i + 1]);
                     break;
                 default:
                     System.out.println("Unknown argument");
