@@ -59,10 +59,10 @@ public class Aspirobot extends Thread {
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         Node root = new Node(new TreeState(posX, posY, beliefs), Constants.INIT, null);
-        knownStates.add(root.treeState);
         if (desires(root.treeState)) {
             return new LinkedList<>();
         }
+        knownStates.add(root.treeState);
         notVisited.add(root);
         boolean b;
         while (!notVisited.isEmpty()) {

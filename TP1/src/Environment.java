@@ -6,8 +6,8 @@ public class Environment extends Thread {
     int[][] map;
     Aspirobot bot;
     double score = 0;
-    double pDust;
-    double pJewel;
+    double pDust = 0.15;
+    double pJewel = 0.05;
     Random r = new Random();
 
     boolean stopped = false;
