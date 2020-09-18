@@ -27,15 +27,15 @@ public class Effectors {
 
     void pick() {
         e.score += Constants.electricityCost;
-        e.map[bot.posY][bot.posX] &= (~Constants.JEWEL);
+        e.map[bot.posX][bot.posY] &= (~Constants.JEWEL);
     }
 
     void suck() {
         e.score += Constants.electricityCost;
-        if ((e.map[bot.posY][bot.posX] & Constants.JEWEL) != 0) {
+        if ((e.map[bot.posX][bot.posY] & Constants.JEWEL) != 0) {
             e.score += Constants.jewelCost;
-            e.map[bot.posY][bot.posX] &= (~Constants.JEWEL);
+            e.map[bot.posX][bot.posY] &= (~Constants.JEWEL);
         }
-        e.map[bot.posY][bot.posX] &= (~Constants.DUST);
+        e.map[bot.posX][bot.posY] &= (~Constants.DUST);
     }
 }

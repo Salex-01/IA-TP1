@@ -37,7 +37,7 @@ public class Environment extends Thread {
 
     @Override
     public void run() {
-        map = new int[height][width];
+        map = new int[width][height];
         bot = new Aspirobot(this);
         while (!stopped) {
             double d = Math.abs(r.nextDouble()) % 1.0;
@@ -62,8 +62,8 @@ public class Environment extends Thread {
         do {
             x = Math.abs(r.nextInt()) % width;
             y = Math.abs(r.nextInt()) % height;
-        } while ((map[y][x] & type) != 0);
-        map[y][x] |= type;
+        } while ((map[x][y] & type) != 0);
+        map[x][y] |= type;
     }
 
     public void sStop() {
