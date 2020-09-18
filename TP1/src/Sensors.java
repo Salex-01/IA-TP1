@@ -1,4 +1,3 @@
-
 public class Sensors {
     Aspirobot bot;
     Environment e;
