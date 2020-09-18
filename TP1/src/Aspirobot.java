@@ -38,12 +38,15 @@ public class Aspirobot extends Thread {
                 switch (c) {
                     case Constants.SUCK:
                         effectors.suck();
+                        System.out.println("suck at pos x = " + posX + " and y = " + posY + " score = " + e.score);
                         break;
                     case Constants.PICK:
                         effectors.pick();
+                        System.out.println("pick at pos x = " + posX + " and y = " + posY + " score = " + e.score);
                         break;
                     default:
                         effectors.move(c);
+                        System.out.println("move to x = " + posX + " and y = " + posY + " score = " + e.score);
                         break;
                 }
             }
