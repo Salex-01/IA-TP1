@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Aspirobot extends Thread {
@@ -13,6 +14,10 @@ public class Aspirobot extends Thread {
         sensors = new Sensors(e, this);
         effectors = new Effectors(e, this);
         this.start();
+    }
+
+    LinkedList<Character> decide() {
+
     }
 
     @Override

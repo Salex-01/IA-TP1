@@ -1,8 +1,8 @@
 public class Node {
-    State state;
+    TreeState state;
     Character t;
 
-    public Node(State s, char t1) {
+    public Node(TreeState s, char t1) {
         state = s;
         t = t1;
     }
