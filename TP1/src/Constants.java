@@ -11,4 +11,5 @@ public class Constants {
     static final char LEFT = 'l';
     static final char PICK = 'p';
     static final char SUCK = 's';
+    static final char INIT = 'i';
 }
