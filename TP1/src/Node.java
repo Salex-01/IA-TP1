@@ -38,15 +38,14 @@ public class Node {
             c.add(new Node(new TreeState(treeState.x, treeState.y + 1, treeState.map), Constants.DOWN, this));
         }
         if ((treeState.map[treeState.x][treeState.y] & Constants.JEWEL) != 0) {
-            int[][] newMap = treeState.map.clone();
+            int[][] newMap = Constants.deepClone(treeState.map);
             newMap[treeState.x][treeState.y] &= (~Constants.JEWEL);
             c.add(new Node(new TreeState(treeState.x, treeState.y, newMap), Constants.PICK, this));
         } else if ((treeState.map[treeState.x][treeState.y] & Constants.DUST) != 0) {
-            int[][] newMap = treeState.map.clone();
+            int[][] newMap = Constants.deepClone(treeState.map);
             newMap[treeState.x][treeState.y] &= (~Constants.DUST);
             c.add(new Node(new TreeState(treeState.x, treeState.y, newMap), Constants.SUCK, this));
         }
         return c;
     }
 }
-

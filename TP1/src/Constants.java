@@ -12,4 +12,12 @@ public class Constants {
     static final char PICK = 'p';
     static final char SUCK = 's';
     static final char INIT = 'i';
+
+    static int[][] deepClone(int[][] map) {
+        int[][] res = new int[map.length][map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            System.arraycopy(map[i], 0, res[i], 0, map[0].length);
+        }
+        return res;
+    }
 }

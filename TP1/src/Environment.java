@@ -46,13 +46,15 @@ public class Environment extends Thread {
         map = new int[width][height];
         bot = new Aspirobot(this);
         while (!stopped) {
-            double d = Math.abs(r.nextDouble()) % 1.0;
-            if (d < pDust) {
-                generate(map, Constants.DUST);
-            }
-            d = Math.abs(r.nextDouble()) % 1.0;
-            if (d < pJewel) {
-                generate(map, Constants.JEWEL);
+            synchronized (map) {
+                double d = Math.abs(r.nextDouble()) % 1.0;
+                if (d < pDust) {
+                    generate(map, Constants.DUST);
+                }
+                d = Math.abs(r.nextDouble()) % 1.0;
+                if (d < pJewel) {
+                    generate(map, Constants.JEWEL);
+                }
             }
             try {
                 Thread.sleep(1);
@@ -70,6 +72,7 @@ public class Environment extends Thread {
             y = Math.abs(r.nextInt()) % height;
         } while ((map[x][y] & type) != 0);
         map[x][y] |= type;
+        System.out.println("généré " + type + " en " + x + " " + y);
     }
 
     public void sStop() {

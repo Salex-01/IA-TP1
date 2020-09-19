@@ -8,7 +8,7 @@ public class Sensors {
     }
 
     public void look() {
-        bot.beliefs = e.map.clone();
+        bot.beliefs = Constants.deepClone(e.map);
     }
 
     public double score() {

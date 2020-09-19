@@ -12,7 +12,7 @@ public class TreeState {
     }
 
     public boolean equals(TreeState s) {
-        if (s.x != x || s.y == y) {
+        if (s.x != x || s.y != y) {
             return false;
         }
         for (int i = 0; i < s.map.length; i++) {
