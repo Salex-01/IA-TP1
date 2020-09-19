@@ -68,6 +68,9 @@ public class Environment extends Thread {
         int x;
         int y;
         do {
+            if (stopped) {
+                return;
+            }
             x = Math.abs(r.nextInt()) % width;
             y = Math.abs(r.nextInt()) % height;
         } while ((map[x][y] & type) != 0);

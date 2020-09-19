@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,15 +40,12 @@ public class Aspirobot extends Thread {
                 switch (c) {
                     case Constants.SUCK:
                         effectors.suck();
-                        System.out.println("suck at pos x = " + posX + " and y = " + posY + " score = " + e.score);
                         break;
                     case Constants.PICK:
                         effectors.pick();
-                        System.out.println("pick at pos x = " + posX + " and y = " + posY + " score = " + e.score);
                         break;
                     default:
                         effectors.move(c);
-                        System.out.println("move to x = " + posX + " and y = " + posY + " score = " + e.score);
                         break;
                 }
             }
@@ -74,6 +70,9 @@ public class Aspirobot extends Thread {
         boolean b;
         List<Node> list;
         while (!notVisited.isEmpty()) {
+            if (stopped) {
+                return new LinkedList<>();
+            }
             list = notVisited.remove(0).generateChildren();
             for (Node n : list) {
                 b = true;
