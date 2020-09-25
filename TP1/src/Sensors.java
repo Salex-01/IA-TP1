@@ -7,7 +7,7 @@ public class Sensors {
         this.e = e;
     }
 
-    public void look() {
+    public void observe() {
         bot.beliefs = Constants.deepClone(e.map);
     }
 

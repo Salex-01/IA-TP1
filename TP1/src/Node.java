@@ -5,13 +5,11 @@ public class Node {
     TreeState treeState;
     Character transition;
     Node parent;
-    ArrayList<Node> children;
 
     public Node(TreeState s, char t1, Node p) {
         treeState = s;
         transition = t1;
         parent = p;
-        children = new ArrayList<>();
     }
 
     public LinkedList<Character> traceBack() {
@@ -26,25 +24,25 @@ public class Node {
     public ArrayList<Node> generateChildren() {
         ArrayList<Node> c = new ArrayList<>();
         if (treeState.x > 0) {
-            c.add(new Node(new TreeState(treeState.x - 1, treeState.y, treeState.map), Constants.LEFT, this));
+            c.add(new Node(new TreeState(treeState.x - 1, treeState.y, treeState.map, treeState.electricityScore + 1), Constants.LEFT, this));
         }
         if (treeState.x < treeState.map.length - 1) {
-            c.add(new Node(new TreeState(treeState.x + 1, treeState.y, treeState.map), Constants.RIGHT, this));
+            c.add(new Node(new TreeState(treeState.x + 1, treeState.y, treeState.map, treeState.electricityScore + 1), Constants.RIGHT, this));
         }
         if (treeState.y > 0) {
-            c.add(new Node(new TreeState(treeState.x, treeState.y - 1, treeState.map), Constants.UP, this));
+            c.add(new Node(new TreeState(treeState.x, treeState.y - 1, treeState.map, treeState.electricityScore + 1), Constants.UP, this));
         }
         if (treeState.y < treeState.map[0].length - 1) {
-            c.add(new Node(new TreeState(treeState.x, treeState.y + 1, treeState.map), Constants.DOWN, this));
+            c.add(new Node(new TreeState(treeState.x, treeState.y + 1, treeState.map, treeState.electricityScore + 1), Constants.DOWN, this));
         }
         if ((treeState.map[treeState.x][treeState.y] & Constants.JEWEL) != 0) {
             int[][] newMap = Constants.deepClone(treeState.map);
             newMap[treeState.x][treeState.y] &= (~Constants.JEWEL);
-            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap), Constants.PICK, this));
+            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap, treeState.electricityScore + 1), Constants.PICK, this));
         } else if ((treeState.map[treeState.x][treeState.y] & Constants.DUST) != 0) {
             int[][] newMap = Constants.deepClone(treeState.map);
             newMap[treeState.x][treeState.y] &= (~Constants.DUST);
-            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap), Constants.SUCK, this));
+            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap, treeState.electricityScore + 1), Constants.SUCK, this));
         }
         return c;
     }

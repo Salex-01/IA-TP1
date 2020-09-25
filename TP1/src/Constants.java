@@ -20,4 +20,7 @@ public class Constants {
         }
         return res;
     }
+
+    static double dustScore = 10;
+    static double jewelScore = 10;
 }
