@@ -53,18 +53,25 @@ public class Aspirobot extends Thread {
                 switch (c) {
                     case Constants.SUCK:
                         effectors.suck();
+                        e.grid.paint(e.grid.getGraphics());
                         break;
                     case Constants.PICK:
                         effectors.pick();
+                        e.grid.paint(e.grid.getGraphics());
                         break;
                     default:
                         effectors.move(c);
+                        e.grid.paint(e.grid.getGraphics());
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ignored) {
+                        }
                         break;
                 }
             }
             System.out.println("score : " + sensors.score());
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException ignored) {
             }
         }

@@ -9,6 +9,7 @@ public class Environment extends Thread {
     double pDust = 0.15;
     double pJewel = 0.05;
     Random r = new Random();
+    Grid grid;
 
     boolean stopped = false;
 
@@ -50,14 +51,17 @@ public class Environment extends Thread {
                 double d = Math.abs(r.nextDouble()) % 1.0;
                 if (d < pDust) {
                     generate(map, Constants.DUST);
+                    grid.paint(grid.getGraphics());
                 }
                 d = Math.abs(r.nextDouble()) % 1.0;
                 if (d < pJewel) {
                     generate(map, Constants.JEWEL);
+                    grid.paint(grid.getGraphics());
                 }
+
             }
             try {
-                Thread.sleep(10);
+                Thread.sleep(1000);
             } catch (InterruptedException ignored) {
             }
         }
@@ -76,6 +80,10 @@ public class Environment extends Thread {
         } while ((map[x][y] & type) != 0);
         map[x][y] |= type;
         System.out.println("généré " + type + " en " + x + " " + y);
+    }
+
+    void setGrid(Grid g) {
+        grid = g;
     }
 
     public void sStop() {

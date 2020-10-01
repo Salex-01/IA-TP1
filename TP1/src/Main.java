@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
@@ -7,10 +8,10 @@ public class Main {
         boolean t = false;
         try {
             Frame f = new Frame();
-            f.setBounds(0, 0, 200, (int) 200);
+            f.setBounds(0, 0, 1200, (int) 1200);
             Container c = new Container();
             f.add(c);
-            c.setBounds(0, 0, 200, 200);
+            c.setBounds(901, 0, 200, 200);
             Button b = new Button();
             c.add(b);
             b.setBounds(0, 0, 150, 150);
@@ -21,14 +22,21 @@ public class Main {
                 e.sStop();
                 f.dispose();
             });
+
+            if (args.length != 0 && args.length % 2 == 0) {
+                e.parseArgs(args);
+            }
+
+            Grid grid = new Grid(900, 900, e.height, e.width, e);
+            grid.setBounds(0, 0, 900,900);
+            f.add(grid);
+            e.setGrid(grid);
             f.addWindowListener(new CloserListener(e, f));
             f.setVisible(true);
         } catch (Exception e1) {
             t = true;
         }
-        if (args.length != 0 && args.length % 2 == 0) {
-            e.parseArgs(args);
-        }
+
         e.start();
         if (t) {
             while (System.in.available() == 0) {
