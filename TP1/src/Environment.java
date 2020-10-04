@@ -6,10 +6,11 @@ public class Environment extends Thread {
     int[][] map;
     Aspirobot bot;
     double score = 0;
-    double pDust = 0.15;
-    double pJewel = 0.05;
+    double pDust = 0.3;
+    double pJewel = 0.1;
     Random r = new Random();
-    Grid grid;
+
+    String mode = "n_w";
 
     boolean stopped = false;
 
@@ -34,6 +35,8 @@ public class Environment extends Thread {
                 case "jc":
                     Constants.jewelCost = Double.parseDouble(args[i + 1]);
                     break;
+                case "mode":
+                    mode = args[i + 1];
                 default:
                     System.out.println("Unknown argument");
                     System.exit(1);
@@ -45,20 +48,18 @@ public class Environment extends Thread {
     @Override
     public void run() {
         map = new int[width][height];
-        bot = new Aspirobot(this);
+        bot = new Aspirobot(this, mode);
         while (!stopped) {
             synchronized (map) {
                 double d = Math.abs(r.nextDouble()) % 1.0;
                 if (d < pDust) {
                     generate(map, Constants.DUST);
-                    grid.paint(grid.getGraphics());
                 }
                 d = Math.abs(r.nextDouble()) % 1.0;
                 if (d < pJewel) {
                     generate(map, Constants.JEWEL);
-                    grid.paint(grid.getGraphics());
                 }
-
+                Main.updateGraphics(false);
             }
             try {
                 Thread.sleep(1000);
@@ -79,11 +80,7 @@ public class Environment extends Thread {
             y = Math.abs(r.nextInt()) % height;
         } while ((map[x][y] & type) != 0);
         map[x][y] |= type;
-        System.out.println("généré " + type + " en " + x + " " + y);
-    }
-
-    void setGrid(Grid g) {
-        grid = g;
+        System.out.println("généré " + (type == Constants.DUST ? "DUST" : "JEWEL") + " en " + x + " " + y);
     }
 
     public void sStop() {
