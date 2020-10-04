@@ -9,7 +9,6 @@ public class Aspirobot extends Thread {
     int posX = 0;
     int posY = 0;
     int[][] beliefs;
-    String decideMode;
 
     boolean desires(TreeState state) {
         for (int i = 0; i < state.map.length; i++) {
@@ -21,6 +20,9 @@ public class Aspirobot extends Thread {
         }
         return true;
     }
+
+    LinkedList<Character> intentions;
+    String decideMode;
 
     boolean stopped = false;
 
@@ -34,7 +36,6 @@ public class Aspirobot extends Thread {
 
     @Override
     public void run() {
-        LinkedList<Character> intentions;
         while (!stopped) {
             Main.updateGraphics(false);
             sensors.observe();
