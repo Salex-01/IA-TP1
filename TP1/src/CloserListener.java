@@ -3,11 +3,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class CloserListener implements WindowListener {
-    Environment e;
     Frame f;
 
-    public CloserListener(Environment e1, Frame f1) {
-        e = e1;
+    public CloserListener(Frame f1) {
         f = f1;
     }
 
@@ -17,7 +15,7 @@ public class CloserListener implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e1) {
-        e.sStop();
+        Main.e.sStop();
         f.dispose();
     }
 

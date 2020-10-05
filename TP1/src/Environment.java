@@ -6,17 +6,18 @@ public class Environment extends Thread {
     int[][] map;
     Aspirobot bot;
     double score = 0;
-    double pDust = 0.3;
-    double pJewel = 0.1;
+    double pDust = 0.15;
+    double pJewel = 0.05;
     Random r = new Random();
 
     String mode = "n_w";
+    int limit;
 
     boolean stopped = false;
 
-    void parseArgs(String[] args) {
+    void buildEnvironment(String[] args) {
         for (int i = 0; i < args.length; i += 2) {
-            switch (args[i]) {
+            switch (args[i].toLowerCase()) {
                 case "h":
                     height = Integer.parseInt(args[i + 1]);
                     break;
@@ -36,7 +37,7 @@ public class Environment extends Thread {
                     Constants.jewelCost = Double.parseDouble(args[i + 1]);
                     break;
                 case "mode":
-                    mode = args[i + 1];
+                    mode = args[i + 1].toLowerCase();
                 default:
                     System.out.println("Unknown argument");
                     System.exit(1);
@@ -48,7 +49,7 @@ public class Environment extends Thread {
     @Override
     public void run() {
         map = new int[width][height];
-        bot = new Aspirobot(this, mode);
+        bot = new Aspirobot(this, mode, limit);
         while (!stopped) {
             synchronized (map) {
                 double d = Math.abs(r.nextDouble()) % 1.0;
@@ -62,7 +63,7 @@ public class Environment extends Thread {
                 Main.updateGraphics(false);
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10);
             } catch (InterruptedException ignored) {
             }
         }
@@ -80,10 +81,13 @@ public class Environment extends Thread {
             y = Math.abs(r.nextInt()) % height;
         } while ((map[x][y] & type) != 0);
         map[x][y] |= type;
-        System.out.println("généré " + (type == Constants.DUST ? "DUST" : "JEWEL") + " en " + x + " " + y);
     }
 
     public void sStop() {
         stopped = true;
+    }
+
+    public void setLimit(int intentionsLimit) {
+        limit = intentionsLimit;
     }
 }

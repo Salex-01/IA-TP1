@@ -23,20 +23,24 @@ public class Aspirobot extends Thread {
 
     LinkedList<Character> intentions;
     String decideMode;
+    int limit;
 
     boolean stopped = false;
 
-    public Aspirobot(Environment e, String mode) {
+    public Aspirobot(Environment e, String mode, int lim) {
         this.e = e;
         sensors = new Sensors(e, this);
         effectors = new Effectors(e, this);
         decideMode = mode;
+        limit = lim;
         this.start();
     }
 
     @Override
     public void run() {
+        int intentionIndex;
         while (!stopped) {
+            intentionIndex = 0;
             Main.updateGraphics(false);
             sensors.observe();
             switch (decideMode) {
@@ -55,7 +59,6 @@ public class Aspirobot extends Thread {
                     break;
             }
             for (char c : intentions) {
-                System.out.println(posX + " " + posY + " : " + c);
                 switch (c) {
                     case Constants.SUCK:
                         effectors.suck();
@@ -67,12 +70,15 @@ public class Aspirobot extends Thread {
                         effectors.move(c);
                         break;
                 }
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ignored) {
+                }
                 Main.updateGraphics(true);
-            }
-            System.out.println("score : " + sensors.score());
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
+                intentionIndex++;
+                if (intentionIndex >= limit) {
+                    break;
+                }
             }
         }
         System.out.println("Stopped");
