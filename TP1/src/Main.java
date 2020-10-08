@@ -86,6 +86,7 @@ public class Main {
         LinkedList<Pair<Integer, Double>> results = new LinkedList<>();
         LinkedList<Integer> testValues = new LinkedList<>();
         testValues.add(1);
+        testValues.add(e.map.length * e.map[0].length * 3);
         bestLimit = 0;
         bestScore = Integer.MAX_VALUE;
         while (!stopped && !testValues.isEmpty()) {
@@ -111,7 +112,7 @@ public class Main {
             }
             e.sStop();
             results.add(new Pair<>(lim, e.score));
-            if (e.score <= (bestScore < 0 ? bestScore * 0.9 : bestScore * 1.1)) {
+            if (e.score <= bestScore * 1.1) {
                 if (lim > 1) {
                     testValues.add(lim - 1);
                 }
