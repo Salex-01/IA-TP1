@@ -27,7 +27,7 @@ class Grid extends Canvas {
         double colWidth = ((double) width / cols) * 0.95;
         for (i = 0; i <= cols; i++)
             g.drawLine((int) (i * colWidth + width * 0.025), (int) (height * 0.025), (int) (i * colWidth + width * 0.025), (int) (height * 0.975));
-
+        // draw the dusts and jewels
         for (i = 0; i < rows; i++) {
             for (j = 0; j < cols; j++) {
                 if ((Main.e.map[i][j] & Constants.DUST) != 0) {
@@ -37,6 +37,7 @@ class Grid extends Canvas {
                 }
             }
         }
+        // draw the Aspirobot
         g.drawString("ASPIROBOT", (int) ((Main.e.bot.posX + 0.33) * colWidth + width * 0.025), (int) ((Main.e.bot.posY + 0.25) * rowHeight + height * 0.025));
     }
 }
