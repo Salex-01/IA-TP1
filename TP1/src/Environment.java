@@ -64,7 +64,7 @@ public class Environment extends Thread {
                 if (d < pJewel) {
                     generate(map, Constants.JEWEL);
                 }
-                Main.updateGraphics(false);
+                Main.updateGraphics(true);
             }
             try {
                 Thread.sleep(10);

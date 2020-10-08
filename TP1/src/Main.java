@@ -146,24 +146,24 @@ public class Main {
         return true;
     }
 
-    static synchronized void updateGraphics(boolean robotMoving) {
+    static synchronized void updateGraphics(boolean pause) {
         if (showMap) {
             try {
                 if (!t) {
                     grid.paint();
-                    if (robotMoving) {
+                    if (pause) {
                         Thread.sleep(200);
                     }
                 } else {
                     ConsoleGraphics.paint(e);
-                    if (robotMoving) {
+                    if (pause) {
                         Thread.sleep(500);
                     }
                 }
             } catch (NullPointerException | InterruptedException ignored) {
             }
         } else {
-            if (!robotMoving) {
+            if (!pause) {
                 try {
                     if (!t) {
                         label.setText("Best limit found : " + bestLimit + "\nScore : " + bestScore);
