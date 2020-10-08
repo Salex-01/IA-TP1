@@ -23,6 +23,15 @@ public class Node {
 
     public ArrayList<Node> generateChildren() {
         ArrayList<Node> c = new ArrayList<>();
+        if ((treeState.map[treeState.x][treeState.y] & Constants.JEWEL) != 0) {
+            int[][] newMap = Constants.deepClone(treeState.map);
+            newMap[treeState.x][treeState.y] &= (~Constants.JEWEL);
+            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap, treeState.electricityScore + 1), Constants.PICK, this));
+        } else if ((treeState.map[treeState.x][treeState.y] & Constants.DUST) != 0) {
+            int[][] newMap = Constants.deepClone(treeState.map);
+            newMap[treeState.x][treeState.y] &= (~Constants.DUST);
+            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap, treeState.electricityScore + 1), Constants.SUCK, this));
+        }
         if (treeState.x > 0) {
             c.add(new Node(new TreeState(treeState.x - 1, treeState.y, treeState.map, treeState.electricityScore + 1), Constants.LEFT, this));
         }
@@ -34,15 +43,6 @@ public class Node {
         }
         if (treeState.y < treeState.map[0].length - 1) {
             c.add(new Node(new TreeState(treeState.x, treeState.y + 1, treeState.map, treeState.electricityScore + 1), Constants.DOWN, this));
-        }
-        if ((treeState.map[treeState.x][treeState.y] & Constants.JEWEL) != 0) {
-            int[][] newMap = Constants.deepClone(treeState.map);
-            newMap[treeState.x][treeState.y] &= (~Constants.JEWEL);
-            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap, treeState.electricityScore + 1), Constants.PICK, this));
-        } else if ((treeState.map[treeState.x][treeState.y] & Constants.DUST) != 0) {
-            int[][] newMap = Constants.deepClone(treeState.map);
-            newMap[treeState.x][treeState.y] &= (~Constants.DUST);
-            c.add(new Node(new TreeState(treeState.x, treeState.y, newMap, treeState.electricityScore + 1), Constants.SUCK, this));
         }
         return c;
     }

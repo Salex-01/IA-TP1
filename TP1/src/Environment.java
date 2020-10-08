@@ -38,17 +38,21 @@ public class Environment extends Thread {
                     break;
                 case "mode":
                     mode = args[i + 1].toLowerCase();
+                    break;
+                case "time":
+                case "showmap":
+                    break;
                 default:
                     System.out.println("Unknown argument");
                     System.exit(1);
                     break;
             }
         }
+        map = new int[width][height];
     }
 
     @Override
     public void run() {
-        map = new int[width][height];
         bot = new Aspirobot(this, mode, limit);
         while (!stopped) {
             synchronized (map) {

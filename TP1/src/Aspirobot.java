@@ -135,6 +135,7 @@ public class Aspirobot extends Thread {
                 return new LinkedList<>();
             }
             list = notVisited.remove(0).generateChildren();
+            int i = 0;
             for (Node n : list) {
                 if (desires(n.treeState)) {
                     return n.traceBack();
@@ -147,7 +148,8 @@ public class Aspirobot extends Thread {
                 }
                 if (b) {
                     knownStates.add(n.treeState);
-                    notVisited.add(0, n);
+                    notVisited.add(i, n);
+                    i++;
                 }
             }
         }
