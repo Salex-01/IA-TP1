@@ -41,7 +41,7 @@ public class Aspirobot extends Thread {
         int intentionIndex;
         while (!stopped) {
             intentionIndex = 0;
-            Main.updateGraphics(false);
+            Main.updateGraphics(false,true);
             sensors.observe();
             switch (decideMode) {
                 case "n_w":
@@ -70,18 +70,13 @@ public class Aspirobot extends Thread {
                         effectors.move(c);
                         break;
                 }
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException ignored) {
-                }
-                Main.updateGraphics(true);
+                Main.updateGraphics(true,false);
                 intentionIndex++;
                 if (intentionIndex >= limit) {
                     break;
                 }
             }
         }
-        System.out.println("Stopped");
     }
 
     private LinkedList<Character> decideN_W() { //Exploration non informée en largeur
@@ -128,6 +123,7 @@ public class Aspirobot extends Thread {
         }
         knownStates.add(root.treeState);
         notVisited.add(root);
+        int i;
         boolean b;
         List<Node> list;
         while (!notVisited.isEmpty()) {
@@ -135,7 +131,7 @@ public class Aspirobot extends Thread {
                 return new LinkedList<>();
             }
             list = notVisited.remove(0).generateChildren();
-            int i = 0;
+            i = 0;
             for (Node n : list) {
                 if (desires(n.treeState)) {
                     return n.traceBack();
@@ -144,6 +140,7 @@ public class Aspirobot extends Thread {
                 for (TreeState ts : knownStates) {
                     if (n.treeState.equals(ts)) {
                         b = false;
+                        break;
                     }
                 }
                 if (b) {

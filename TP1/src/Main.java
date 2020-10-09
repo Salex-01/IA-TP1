@@ -12,12 +12,14 @@ public class Main {
     static int time;
     static int bestLimit;
     static double bestScore;
+    static int nRuns;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         e = new Environment();
         e.buildEnvironment(args);
         showMap = useInterface(args);
         time = setTimeLimit(args);
+        nRuns = setNRuns(args);
         try {
             Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
             Frame f = new Frame();
@@ -90,29 +92,34 @@ public class Main {
         bestLimit = 0;
         bestScore = Integer.MAX_VALUE;
         while (!stopped && !testValues.isEmpty()) {
-            e = new Environment();
-            if (args.length != 0 && args.length % 2 == 0) {
-                e.buildEnvironment(args);
-            }
             int lim = testValues.remove(0);
-            e.setLimit(lim);
-            e.start();
-            for (int i = 0; i < time; i++) {
-                if (stopped) {
-                    return results;
+            double score = 0;
+            for (int j = 0; j < nRuns; j++) {
+                e = new Environment();
+                if (args.length != 0 && args.length % 2 == 0) {
+                    e.buildEnvironment(args);
                 }
-                if (t && System.in.available() != 0) {
-                    e.sStop();
-                    return results;
+                e.setLimit(lim);
+                e.start();
+                for (int i = 0; i < time; i++) {
+                    if (stopped) {
+                        return results;
+                    }
+                    if (t && System.in.available() != 0) {
+                        e.sStop();
+                        return results;
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
                 }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignored) {
-                }
+                e.sStop();
+                score += e.score;
             }
-            e.sStop();
-            results.add(new Pair<>(lim, e.score));
-            if (e.score <= bestScore * 1.1) {
+            double scorePerRun = score / nRuns;
+            results.add(new Pair<>(lim, scorePerRun));
+            if (scorePerRun <= (bestScore < 0 ? bestScore * 0.9 : bestScore / 0.9)) {
                 if (lim > 1) {
                     testValues.add(lim - 1);
                 }
@@ -120,12 +127,21 @@ public class Main {
                     testValues.add(lim + 1);
                 }
                 if (e.score < bestScore) {
-                    bestScore = e.score;
+                    bestScore = scorePerRun;
                     bestLimit = lim;
                 }
             }
         }
         return results;
+    }
+
+    private static int setNRuns(String[] args) {
+        for (int i = 0; i < args.length; i += 2) {
+            if (args[i].toLowerCase().contentEquals("runs")) {
+                return Integer.parseInt(args[i + 1]);
+            }
+        }
+        return 10;
     }
 
     private static int setTimeLimit(String[] args) {
@@ -146,7 +162,7 @@ public class Main {
         return true;
     }
 
-    static synchronized void updateGraphics(boolean pause) {
+    static synchronized void updateGraphics(boolean pause, boolean updateDuringBenchmark) {
         if (showMap) {
             try {
                 if (!t) {
@@ -163,12 +179,12 @@ public class Main {
             } catch (NullPointerException | InterruptedException ignored) {
             }
         } else {
-            if (!pause) {
+            if (updateDuringBenchmark) {
                 try {
                     if (!t) {
-                        label.setText("Best limit found : " + bestLimit + "\nScore : " + bestScore);
+                        label.setText("Best limit found : " + bestLimit + " - Score : " + bestScore);
                     } else {
-                        System.out.println("Best limit found : " + bestLimit + "\nScore : " + bestScore);
+                        System.out.println("Best limit found : " + bestLimit + " - Score : " + bestScore);
                     }
                 } catch (NullPointerException ignored) {
                 }

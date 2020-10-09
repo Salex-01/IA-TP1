@@ -41,6 +41,7 @@ public class Environment extends Thread {
                     break;
                 case "time":
                 case "showmap":
+                case "runs":
                     break;
                 default:
                     System.out.println("Unknown argument");
@@ -64,10 +65,10 @@ public class Environment extends Thread {
                 if (d < pJewel) {
                     generate(map, Constants.JEWEL);
                 }
-                Main.updateGraphics(true);
+                Main.updateGraphics(true, true);
             }
             try {
-                Thread.sleep(10);
+                Thread.sleep(1);
             } catch (InterruptedException ignored) {
             }
         }
