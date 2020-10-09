@@ -28,12 +28,12 @@ public class TreeState {
     }
 
     public void computeScore() {
-        for (int i = 0; i < map.length; i++) {
+        for (int[] col : map) {
             for (int j = 0; j < map[0].length; j++) {
-                if ((map[i][j] & Constants.DUST) != 0) {
+                if ((col[j] & Constants.DUST) != 0) {
                     score += Constants.dustScore;
                 }
-                if ((map[i][j] & Constants.JEWEL) != 0) {
+                if ((col[j] & Constants.JEWEL) != 0) {
                     score += Constants.jewelScore;
                 }
             }

@@ -3,7 +3,7 @@ import java.util.Random;
 public class Environment extends Thread {
     int height = 5;
     int width = 5;
-    int[][] map;
+    final int[][] map;
     Aspirobot bot;
     double score = 0;
     double pDust = 0.15;
@@ -15,7 +15,7 @@ public class Environment extends Thread {
 
     boolean stopped = false;
 
-    void buildEnvironment(String[] args) {
+    public Environment(String[] args){
         for (int i = 0; i < args.length; i += 2) {
             switch (args[i].toLowerCase()) {
                 case "h":
@@ -36,6 +36,18 @@ public class Environment extends Thread {
                 case "jc":
                     Constants.jewelCost = Double.parseDouble(args[i + 1]);
                     break;
+                case "ds":
+                    Constants.dustScore = Double.parseDouble(args[i + 1]);
+                    break;
+                case "js":
+                    Constants.jewelScore = Double.parseDouble(args[i + 1]);
+                    break;
+                case "db":
+                    Constants.dustBonus = Double.parseDouble(args[i + 1]);
+                    break;
+                case "jb":
+                    Constants.jewelBonus = Double.parseDouble(args[i + 1]);
+                    break;
                 case "mode":
                     mode = args[i + 1].toLowerCase();
                     break;
@@ -53,6 +65,7 @@ public class Environment extends Thread {
     }
 
     @Override
+    @SuppressWarnings(value = "BusyWait")
     public void run() {
         bot = new Aspirobot(this, mode, limit);
         while (!stopped) {

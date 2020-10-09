@@ -1,6 +1,6 @@
 import java.awt.*;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Main {
     static Grid grid;
@@ -13,10 +13,10 @@ public class Main {
     static int bestLimit;
     static double bestScore;
     static int nRuns;
+    static int lim;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        e = new Environment();
-        e.buildEnvironment(args);
+    public static void main(String[] args) throws IOException {
+        e = new Environment(args);
         showMap = useInterface(args);
         time = setTimeLimit(args);
         nRuns = setNRuns(args);
@@ -43,7 +43,7 @@ public class Main {
                 c.add(grid);
             } else {
                 label = new Label();
-                label.setBounds(0, 50, 300, 200);
+                label.setBounds(0, 50, 500, 200);
                 c.add(label);
             }
             f.addWindowListener(new CloserListener(f));
@@ -52,53 +52,26 @@ public class Main {
             t = true;
         }
 
-        LinkedList<Pair<Integer, Double>> results = aggregate(runTest(args));
+        Set<Map.Entry<Integer, Pair<Double, Integer>>> s = runTest(args).entrySet();
 
-        for (Pair<Integer, Double> p : results) {
-            System.out.println("limit " + p.key + " -> " + p.value);
+        for (Map.Entry<Integer, Pair<Double, Integer>> e : s) {
+            System.out.println("limit " + e.getKey() + " -> " + (e.getValue().key / e.getValue().value));
         }
     }
 
-    private static LinkedList<Pair<Integer, Double>> aggregate(LinkedList<Pair<Integer, Double>> rawResults) {
-        LinkedList<Triplet<Integer, Double, Integer>> tmp = new LinkedList<>();
-        boolean tem;
-        while (!rawResults.isEmpty()) {
-            Pair<Integer, Double> p = rawResults.remove(0);
-            tem = true;
-            for (Triplet<Integer, Double, Integer> p2 : tmp) {
-                if (p.key == p2.first) {
-                    p2.second += p.value;
-                    p2.third++;
-                    tem = false;
-                    break;
-                }
-            }
-            if (tem) {
-                tmp.add(new Triplet<>(p.key, p.value, 1));
-            }
-        }
-        LinkedList<Pair<Integer, Double>> results = new LinkedList<>();
-        for (Triplet<Integer, Double, Integer> t : tmp) {
-            results.add(new Pair<>(t.first, t.second / t.third));
-        }
-        return results;
-    }
-
-    private static LinkedList<Pair<Integer, Double>> runTest(String[] args) throws IOException {
-        LinkedList<Pair<Integer, Double>> results = new LinkedList<>();
+    @SuppressWarnings(value = "BusyWait")
+    private static HashMap<Integer, Pair<Double, Integer>> runTest(String[] args) throws IOException {
+        HashMap<Integer, Pair<Double, Integer>> results = new HashMap<>();
         LinkedList<Integer> testValues = new LinkedList<>();
         testValues.add(1);
         testValues.add(e.map.length * e.map[0].length * 3);
         bestLimit = 0;
-        bestScore = Integer.MAX_VALUE;
+        bestScore = Double.MAX_VALUE;
         while (!stopped && !testValues.isEmpty()) {
-            int lim = testValues.remove(0);
+            lim = testValues.remove(0);
             double score = 0;
             for (int j = 0; j < nRuns; j++) {
-                e = new Environment();
-                if (args.length != 0 && args.length % 2 == 0) {
-                    e.buildEnvironment(args);
-                }
+                e = new Environment(args);
                 e.setLimit(lim);
                 e.start();
                 for (int i = 0; i < time; i++) {
@@ -118,17 +91,31 @@ public class Main {
                 score += e.score;
             }
             double scorePerRun = score / nRuns;
-            results.add(new Pair<>(lim, scorePerRun));
-            if (scorePerRun <= (bestScore < 0 ? bestScore * 0.9 : bestScore / 0.9)) {
+            Pair<Double, Integer> p = results.get(lim);
+            if (p == null) {
+                p = new Pair<>(scorePerRun, 1);
+            } else {
+                p.key += scorePerRun;
+                p.value++;
+            }
+            results.put(lim, p);
+            if (lim == bestLimit) {
+                bestScore = p.key / p.value;
+            }
+            Set<Map.Entry<Integer, Pair<Double, Integer>>> s = results.entrySet();
+            for (Map.Entry<Integer, Pair<Double, Integer>> e : s) {
+                double tmp = e.getValue().key / e.getValue().value;
+                if (tmp < bestScore) {
+                    bestScore = tmp;
+                    bestLimit = e.getKey();
+                }
+            }
+            if (p.key / p.value <= (bestScore < 0 ? bestScore * 0.9 : bestScore * 1.1)) {
                 if (lim > 1) {
                     testValues.add(lim - 1);
                 }
                 if (lim < e.map.length * e.map[0].length * 3) {
                     testValues.add(lim + 1);
-                }
-                if (e.score < bestScore) {
-                    bestScore = scorePerRun;
-                    bestLimit = lim;
                 }
             }
         }
@@ -182,9 +169,9 @@ public class Main {
             if (updateDuringBenchmark) {
                 try {
                     if (!t) {
-                        label.setText("Best limit found : " + bestLimit + " - Score : " + bestScore);
+                        label.setText("Best limit found : " + bestLimit + " - Score : " + bestScore + " - Testing : " + lim);
                     } else {
-                        System.out.println("Best limit found : " + bestLimit + " - Score : " + bestScore);
+                        System.out.println("Best limit found : " + bestLimit + " - Score : " + bestScore + " - Testing : " + lim);
                     }
                 } catch (NullPointerException ignored) {
                 }

@@ -41,7 +41,7 @@ public class Aspirobot extends Thread {
         int intentionIndex;
         while (!stopped) {
             intentionIndex = 0;
-            Main.updateGraphics(false,true);
+            Main.updateGraphics(false, true);
             sensors.observe();
             switch (decideMode) {
                 case "n_w":
@@ -70,7 +70,7 @@ public class Aspirobot extends Thread {
                         effectors.move(c);
                         break;
                 }
-                Main.updateGraphics(true,false);
+                Main.updateGraphics(true, false);
                 intentionIndex++;
                 if (intentionIndex >= limit) {
                     break;
@@ -79,15 +79,25 @@ public class Aspirobot extends Thread {
         }
     }
 
-    private LinkedList<Character> decideN_W() { //Exploration non informée en largeur
-        LinkedList<TreeState> knownStates = new LinkedList<>();
-        LinkedList<Node> notVisited = new LinkedList<>();
+    private boolean initDecide(LinkedList<TreeState> knownStates, LinkedList<Node> notVisited, boolean cs) {
         Node root = new Node(new TreeState(posX, posY, beliefs, 0), Constants.INIT, null);
         if (desires(root.treeState)) {
-            return new LinkedList<>();
+            return true;
         }
         knownStates.add(root.treeState);
         notVisited.add(root);
+        if (cs) {
+            root.treeState.computeScore();
+        }
+        return false;
+    }
+
+    private LinkedList<Character> decideN_W() { //Exploration non informée en largeur
+        LinkedList<TreeState> knownStates = new LinkedList<>();
+        LinkedList<Node> notVisited = new LinkedList<>();
+        if(initDecide(knownStates,notVisited,false)){
+            return new LinkedList<>();
+        }
         boolean b;
         List<Node> list;
         while (!notVisited.isEmpty()) {
@@ -103,6 +113,7 @@ public class Aspirobot extends Thread {
                 for (TreeState ts : knownStates) {
                     if (n.treeState.equals(ts)) {
                         b = false;
+                        break;
                     }
                 }
                 if (b) {
@@ -117,12 +128,9 @@ public class Aspirobot extends Thread {
     private LinkedList<Character> decideN_D() { //Exploration non informée en profondeur
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
-        Node root = new Node(new TreeState(posX, posY, beliefs, 0), Constants.INIT, null);
-        if (desires(root.treeState)) {
+        if(initDecide(knownStates,notVisited,false)){
             return new LinkedList<>();
         }
-        knownStates.add(root.treeState);
-        notVisited.add(root);
         int i;
         boolean b;
         List<Node> list;
@@ -156,13 +164,9 @@ public class Aspirobot extends Thread {
     private LinkedList<Character> decideI_BF() {    // Exploration informée best first
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
-        Node root = new Node(new TreeState(posX, posY, beliefs, 0), Constants.INIT, null);
-        if (desires(root.treeState)) {
+        if (initDecide(knownStates, notVisited, true)) {
             return new LinkedList<>();
         }
-        root.treeState.computeScore();
-        knownStates.add(root.treeState);
-        notVisited.add(root);
         boolean b;
         List<Node> list;
         while (!notVisited.isEmpty()) {
@@ -179,6 +183,7 @@ public class Aspirobot extends Thread {
                 for (TreeState ts : knownStates) {
                     if (n.treeState.equals(ts)) {
                         b = false;
+                        break;
                     }
                 }
                 if (b) {
