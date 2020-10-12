@@ -13,9 +13,7 @@ public class Constants {
     static final char SUCK = 's';
     static final char INIT = 'i';
 
-    /*
-    copie une matrice d'entier
-     */
+    // Copie une matrice d'entiers à 2 dimensions
     static int[][] deepClone(int[][] map) {
         int[][] res = new int[map.length][map[0].length];
         for (int i = 0; i < map.length; i++) {

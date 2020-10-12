@@ -11,9 +11,7 @@ public class Aspirobot extends Thread {
     int posY = 0;
     int[][] beliefs;
 
-    /*
-    teste si les desires de l'aspirobot sont realises à l'etat de l'arbre donne en argument
-     */
+    // Teste si les désirs de l'Aspirobot sont réalisés par l'état donné en argument
     boolean desires(TreeState state) {
         for (int i = 0; i < state.map.length; i++) {
             for (int j = 0; j < state.map[0].length; j++) {
@@ -30,9 +28,7 @@ public class Aspirobot extends Thread {
     int limit;
 
     boolean stopped = false;
-    /*
-    constructeur de l'aspirobot
-     */
+
     public Aspirobot(Environment e, String mode, int lim) {
         this.e = e;
         sensors = new Sensors(e, this);
@@ -42,18 +38,16 @@ public class Aspirobot extends Thread {
         this.start();
     }
 
-    /*
-    boucle d'execution de l'aspirobot
-     */
+    // Boucle d'exécution de l'Aspirobot
     @Override
     public void run() {
         int intentionIndex;
         while (!stopped) {
             intentionIndex = 0;
             Main.updateGraphics(false, true);
-            // l'aspirobot utilise ses "capteurs" pour mettre à jour "beliefs"
+            // L'Aspirobot utilise ses capteurs pour mettre à jour beliefs
             sensors.observe();
-            // decide des intentions suivant le mode de recherche
+            // Détermination des intentions suivant le mode de recherche
             switch (decideMode) {
                 case "n_w":
                     intentions = decideN_W();
@@ -69,10 +63,8 @@ public class Aspirobot extends Thread {
                     System.out.println("Unknown mode");
                     break;
             }
+            // Parcourt les intentions pour les faire exécuter par les effecteurs de l'Aspirobot
             for (char c : intentions) {
-                /*
-                parcours les intentions pour les faire executer par les effecteurs de l'aspirobot
-                 */
                 switch (c) {
                     case Constants.SUCK:
                         effectors.suck();
@@ -86,9 +78,7 @@ public class Aspirobot extends Thread {
                 }
                 Main.updateGraphics(true, false);
                 intentionIndex++;
-                /*
-                si le nombre d'intentions depasse la limite les intententions apres cette limite sont ignores
-                 */
+                // Si le nombre d'actions exécutées atteint la limite, les intentions suivantes sont ignorées
                 if (intentionIndex >= limit) {
                     break;
                 }
@@ -96,6 +86,7 @@ public class Aspirobot extends Thread {
         }
     }
 
+    // Partie commune à l'initialisation de toutes les fonctions de décision
     private boolean initDecide(LinkedList<TreeState> knownStates, LinkedList<Node> notVisited, boolean cs) {
         Node root = new Node(new TreeState(posX, posY, beliefs, 0), Constants.INIT, null);
         if (desires(root.treeState)) {
@@ -109,7 +100,8 @@ public class Aspirobot extends Thread {
         return false;
     }
 
-    private LinkedList<Character> decideN_W() { //Exploration non informee en largeur
+    // Exploration non informee en largeur
+    private LinkedList<Character> decideN_W() {
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         if(initDecide(knownStates,notVisited,false)){
@@ -117,12 +109,14 @@ public class Aspirobot extends Thread {
         }
         boolean b;
         List<Node> list;
+        // Tant qu'il reste des noeuds à explorer
         while (!notVisited.isEmpty()) {
             if (stopped) {
                 return new LinkedList<>();
             }
             list = notVisited.remove(0).generateChildren();
             for (Node n : list) {
+                // Si on a trouvé un état qui correspond à l'objectif
                 if (desires(n.treeState)) {
                     return n.traceBack();
                 }
@@ -133,7 +127,9 @@ public class Aspirobot extends Thread {
                         break;
                     }
                 }
+                // Si l'état n'est pas encore connu
                 if (b) {
+                    // On l'ajoute aux listes d'états connus et à explorer
                     knownStates.add(n.treeState);
                     notVisited.add(notVisited.size(), n);
                 }
@@ -142,7 +138,8 @@ public class Aspirobot extends Thread {
         return new LinkedList<>();
     }
 
-    private LinkedList<Character> decideN_D() { //Exploration non informee en profondeur
+    // Exploration non informee en profondeur
+    private LinkedList<Character> decideN_D() {
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         if(initDecide(knownStates,notVisited,false)){
@@ -151,6 +148,7 @@ public class Aspirobot extends Thread {
         int i;
         boolean b;
         List<Node> list;
+        // Tant qu'il reste des noeuds à explorer
         while (!notVisited.isEmpty()) {
             if (stopped) {
                 return new LinkedList<>();
@@ -158,6 +156,7 @@ public class Aspirobot extends Thread {
             list = notVisited.remove(0).generateChildren();
             i = 0;
             for (Node n : list) {
+                // Si on a trouvé un état qui correspond à l'objectif
                 if (desires(n.treeState)) {
                     return n.traceBack();
                 }
@@ -168,8 +167,11 @@ public class Aspirobot extends Thread {
                         break;
                     }
                 }
+                // Si l'état n'est pas encore connu
                 if (b) {
+                    // On l'ajoute aux listes d'états connus et à explorer
                     knownStates.add(n.treeState);
+                    // On ajout les noeuds au début de la liste des noeuds à explorer dans l'ordre dans lequel ils sont retournés par generateChildren
                     notVisited.add(i, n);
                     i++;
                 }
@@ -178,7 +180,8 @@ public class Aspirobot extends Thread {
         return new LinkedList<>();
     }
 
-    private LinkedList<Character> decideI_BF() {    // Exploration informee best first
+    // Exploration informée best first
+    private LinkedList<Character> decideI_BF() {
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         if (initDecide(knownStates, notVisited, true)) {
@@ -186,16 +189,19 @@ public class Aspirobot extends Thread {
         }
         boolean b;
         List<Node> list;
+        // Tant qu'il reste des noeuds à explorer
         while (!notVisited.isEmpty()) {
             if (stopped) {
                 return new LinkedList<>();
             }
             list = notVisited.remove(0).generateChildren();
             for (Node n : list) {
+                // Si on a trouvé un état qui correspond à l'objectif
                 if (desires(n.treeState)) {
                     return n.traceBack();
                 }
-                n.treeState.computeScore(); // Calcul de la desirabilite de l'etat
+                // Calcule la desirabilite de l'etat
+                n.treeState.computeScore();
                 b = true;
                 for (TreeState ts : knownStates) {
                     if (n.treeState.equals(ts)) {
@@ -203,11 +209,14 @@ public class Aspirobot extends Thread {
                         break;
                     }
                 }
+                // Si l'état n'est pas encore connu
                 if (b) {
+                    // On l'ajoute aux listes d'états connus et à explorer
                     knownStates.add(n.treeState);
                     notVisited.add(n);
                 }
             }
+            // On trie la liste des états à explorer pour mettre les états les plus désirables au début de la liste
             notVisited.sort(Comparator.comparingDouble(o -> o.treeState.score));
         }
         return new LinkedList<>();

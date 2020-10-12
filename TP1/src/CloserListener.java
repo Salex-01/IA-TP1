@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+// Listener pour fermer la fenêtre graphique
+
 public class CloserListener implements WindowListener {
     Frame f;
 

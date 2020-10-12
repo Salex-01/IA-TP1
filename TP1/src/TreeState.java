@@ -6,9 +6,7 @@ public class TreeState {
     int y;
     double score;
     double electricityScore;
-    /*
-    Cree un etat de l'arbre compose de l'etat du manoir, de la position de l'aspirobot et des scores
-     */
+
     public TreeState(int x1, int y1, int[][] map1, double sc) {
         x = x1;
         y = y1;
@@ -17,9 +15,7 @@ public class TreeState {
         electricityScore = sc;
     }
 
-    /*
-    teste l'egalite entre deux etat de l'arbre
-     */
+    // Teste l'égalité entre deux états (au sens où la carte et la position du robot sont identiques)
     public boolean equals(TreeState s) {
         if (s.x != x || s.y != y) {
             return false;
@@ -31,9 +27,8 @@ public class TreeState {
         }
         return true;
     }
-    /*
-    ajoute à score le cout de la poussière et des bijoux restants
-     */
+
+    // Calcule la désirabilité de l'état (un score plus faible correspond à un état plus désirable)
     public void computeScore() {
         for (int[] col : map) {
             for (int j = 0; j < map[0].length; j++) {

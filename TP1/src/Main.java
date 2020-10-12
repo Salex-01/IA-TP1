@@ -16,13 +16,13 @@ public class Main {
     static int lim;
 
     public static void main(String[] args) throws IOException {
-        // creer l'environnement et recupère les arguments
+        // Crée l'environnement et récupère les arguments
         e = new Environment(args);
         showMap = useInterface(args);
         time = setTimeLimit(args);
         nRuns = setNRuns(args);
         try {
-            // met en place l'affichage
+            // Met en place la fenêtre graphique
             Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
             Frame f = new Frame();
             f.setBounds((int) (dimension.width * 0.1), (int) (dimension.height * 0.1), (int) (dimension.width * 0.8), (int) (dimension.height * 0.8));
@@ -51,9 +51,10 @@ public class Main {
             f.addWindowListener(new CloserListener(f));
             f.setVisible(true);
         } catch (Exception e1) {
+            // Si la fenêtre graphique ne peut pas être créée
             t = true;
         }
-        // lance les testes
+        // Lance les tests
         Set<Map.Entry<Integer, Pair<Double, Integer>>> s = runTest(args).entrySet();
 
         for (Map.Entry<Integer, Pair<Double, Integer>> e : s) {
@@ -64,24 +65,24 @@ public class Main {
     @SuppressWarnings(value = "BusyWait")
     private static HashMap<Integer, Pair<Double, Integer>> runTest(String[] args) throws IOException {
         HashMap<Integer, Pair<Double, Integer>> results = new HashMap<>();
-        // stock les valeurs de limite à tester
+        // Stocke les limites à tester
         LinkedList<Integer> testValues = new LinkedList<>();
         testValues.add(1);
         testValues.add(e.map.length * e.map[0].length * 3);
-        // initialise la meilleur limite et le meilleur score
+        // Initialise la meilleure limite et le meilleur score
         bestLimit = 0;
         bestScore = Double.MAX_VALUE;
-        //tant qu'il y a une valeur de limite à tester
+        // Tant qu'il y a une valeur de limite à tester
         while (!stopped && !testValues.isEmpty()) {
             lim = testValues.remove(0);
             double score = 0;
-            /*
-            On creer un environnement pour tester la limite actuel, se teste sera realise nRuns fois
-             */
+            // On crée un environnement pour tester la limite actuelle, ce test sera realisé nRuns fois
             for (int j = 0; j < nRuns; j++) {
+                // On initialise un nouvel environnement pour chaque test
                 e = new Environment(args);
                 e.setLimit(lim);
                 e.start();
+                // On attend la fin du temps imparti (avec des sleep d'une seconde pour pouvoir arrêter le programme sans attendre la fin du test en cours)
                 for (int i = 0; i < time; i++) {
                     if (stopped) {
                         return results;
@@ -98,7 +99,8 @@ public class Main {
                 e.sStop();
                 score += e.score;
             }
-            // on fait la moyenne des nRuns scores et on crée une paire avec la limite testee
+            // On fait la moyenne des scores des nRuns tests et on stocke le résultat, avec la limite à laquelle il correspond et le poids de la valeur stockée
+            // (utile lorsqu'une valeur est testée plusieurs fois)
             double scorePerRun = score / nRuns;
             Pair<Double, Integer> p = results.get(lim);
             if (p == null) {
@@ -108,6 +110,7 @@ public class Main {
                 p.value++;
             }
             results.put(lim, p);
+            // La fin de la boucle actualise la meilleure limite trouvée et le meilleur score
             if (lim == bestLimit) {
                 bestScore = p.key / p.value;
             }
@@ -133,9 +136,7 @@ public class Main {
         return results;
     }
 
-    /*
-    modifie l'attribut NRuns avec celui passe en argument
-     */
+    // Remplace l'attribut NRuns par celui passé en argument au lancement du programme
     private static int setNRuns(String[] args) {
         for (int i = 0; i < args.length; i += 2) {
             if (args[i].toLowerCase().contentEquals("runs")) {
@@ -145,9 +146,7 @@ public class Main {
         return 10;
     }
 
-    /*
-    modifie l'attribut time avec celui passe en argument
-     */
+    // Remplace l'attribut time par celui passé en argument au lancement du programme
     private static int setTimeLimit(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].toLowerCase().contentEquals("time")) {
@@ -157,9 +156,7 @@ public class Main {
         return 10;
     }
 
-    /*
-    modifie l'attribut showmap avec celui passe en argument
-     */
+    // Remplace l'attribut showmap par celui passé en argument au lancement du programme
     private static boolean useInterface(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].toLowerCase().contentEquals("showmap")) {
@@ -169,9 +166,7 @@ public class Main {
         return true;
     }
 
-    /*
-    met à jour l'affichage
-     */
+    // Met à jour l'affichage
     static synchronized void updateGraphics(boolean pause, boolean updateDuringBenchmark) {
         if (showMap) {
             try {
