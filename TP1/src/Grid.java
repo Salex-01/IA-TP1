@@ -18,16 +18,16 @@ class Grid extends Canvas {
         Graphics g = this.getGraphics();
         int i, j;
         g.clearRect(0, 0, width, height);
-        // draw the rows
+        // dessine les lignes
         double rowHeight = ((double) height / rows) * 0.95;
         for (i = 0; i <= rows; i++)
             g.drawLine((int) (width * 0.025), (int) (i * rowHeight + height * 0.025), (int) (width * 0.975), (int) (i * rowHeight + height * 0.025));
 
-        // draw the columns
+        // dessine les colonnes
         double colWidth = ((double) width / cols) * 0.95;
         for (i = 0; i <= cols; i++)
             g.drawLine((int) (i * colWidth + width * 0.025), (int) (height * 0.025), (int) (i * colWidth + width * 0.025), (int) (height * 0.975));
-        // draw the dusts and jewels
+        // dessine les bijoux et la poussière
         for (i = 0; i < rows; i++) {
             for (j = 0; j < cols; j++) {
                 if ((Main.e.map[i][j] & Constants.DUST) != 0) {
@@ -37,7 +37,7 @@ class Grid extends Canvas {
                 }
             }
         }
-        // draw the Aspirobot
+        // dessine l'aspirobot
         g.drawString("ASPIROBOT", (int) ((Main.e.bot.posX + 0.33) * colWidth + width * 0.025), (int) ((Main.e.bot.posY + 0.25) * rowHeight + height * 0.025));
     }
 }
