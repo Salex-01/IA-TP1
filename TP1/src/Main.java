@@ -16,11 +16,13 @@ public class Main {
     static int lim;
 
     public static void main(String[] args) throws IOException {
+        // creer l'environnement et recupère les arguments
         e = new Environment(args);
         showMap = useInterface(args);
         time = setTimeLimit(args);
         nRuns = setNRuns(args);
         try {
+            // met en place l'affichage
             Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
             Frame f = new Frame();
             f.setBounds((int) (dimension.width * 0.1), (int) (dimension.height * 0.1), (int) (dimension.width * 0.8), (int) (dimension.height * 0.8));
@@ -51,7 +53,7 @@ public class Main {
         } catch (Exception e1) {
             t = true;
         }
-
+        // lance les testes
         Set<Map.Entry<Integer, Pair<Double, Integer>>> s = runTest(args).entrySet();
 
         for (Map.Entry<Integer, Pair<Double, Integer>> e : s) {
@@ -62,14 +64,20 @@ public class Main {
     @SuppressWarnings(value = "BusyWait")
     private static HashMap<Integer, Pair<Double, Integer>> runTest(String[] args) throws IOException {
         HashMap<Integer, Pair<Double, Integer>> results = new HashMap<>();
+        // stock les valeurs de limite à tester
         LinkedList<Integer> testValues = new LinkedList<>();
         testValues.add(1);
         testValues.add(e.map.length * e.map[0].length * 3);
+        // initialise la meilleur limite et le meilleur score
         bestLimit = 0;
         bestScore = Double.MAX_VALUE;
+        //tant qu'il y a une valeur de limite à tester
         while (!stopped && !testValues.isEmpty()) {
             lim = testValues.remove(0);
             double score = 0;
+            /*
+            On creer un environnement pour tester la limite actuel, se teste sera realise nRuns fois
+             */
             for (int j = 0; j < nRuns; j++) {
                 e = new Environment(args);
                 e.setLimit(lim);
@@ -90,6 +98,7 @@ public class Main {
                 e.sStop();
                 score += e.score;
             }
+            // on fait la moyenne des nRuns scores et on crée une paire avec la limite testee
             double scorePerRun = score / nRuns;
             Pair<Double, Integer> p = results.get(lim);
             if (p == null) {
@@ -105,11 +114,13 @@ public class Main {
             Set<Map.Entry<Integer, Pair<Double, Integer>>> s = results.entrySet();
             for (Map.Entry<Integer, Pair<Double, Integer>> e : s) {
                 double tmp = e.getValue().key / e.getValue().value;
+                // met à jour le meilleur score et la meilleur limite
                 if (tmp < bestScore) {
                     bestScore = tmp;
                     bestLimit = e.getKey();
                 }
             }
+            // ajoute lim - 1 et lim + 1 aux limites à tester si cela est possible
             if (p.key / p.value <= (bestScore < 0 ? bestScore * 0.9 : bestScore * 1.1)) {
                 if (lim > 1) {
                     testValues.add(lim - 1);
@@ -122,6 +133,9 @@ public class Main {
         return results;
     }
 
+    /*
+    modifie l'attribut NRuns avec celui passe en argument
+     */
     private static int setNRuns(String[] args) {
         for (int i = 0; i < args.length; i += 2) {
             if (args[i].toLowerCase().contentEquals("runs")) {
@@ -131,6 +145,9 @@ public class Main {
         return 10;
     }
 
+    /*
+    modifie l'attribut time avec celui passe en argument
+     */
     private static int setTimeLimit(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].toLowerCase().contentEquals("time")) {
@@ -140,6 +157,9 @@ public class Main {
         return 10;
     }
 
+    /*
+    modifie l'attribut showmap avec celui passe en argument
+     */
     private static boolean useInterface(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].toLowerCase().contentEquals("showmap")) {
@@ -149,6 +169,9 @@ public class Main {
         return true;
     }
 
+    /*
+    met à jour l'affichage
+     */
     static synchronized void updateGraphics(boolean pause, boolean updateDuringBenchmark) {
         if (showMap) {
             try {

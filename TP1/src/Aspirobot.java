@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Aspirobot extends Thread {
+
     Sensors sensors;
     Effectors effectors;
     Environment e;
@@ -10,6 +11,9 @@ public class Aspirobot extends Thread {
     int posY = 0;
     int[][] beliefs;
 
+    /*
+    teste si les desires de l'aspirobot sont realises à l'etat de l'arbre donne en argument
+     */
     boolean desires(TreeState state) {
         for (int i = 0; i < state.map.length; i++) {
             for (int j = 0; j < state.map[0].length; j++) {
@@ -26,7 +30,9 @@ public class Aspirobot extends Thread {
     int limit;
 
     boolean stopped = false;
-
+    /*
+    constructeur de l'aspirobot
+     */
     public Aspirobot(Environment e, String mode, int lim) {
         this.e = e;
         sensors = new Sensors(e, this);
@@ -36,13 +42,18 @@ public class Aspirobot extends Thread {
         this.start();
     }
 
+    /*
+    boucle d'execution de l'aspirobot
+     */
     @Override
     public void run() {
         int intentionIndex;
         while (!stopped) {
             intentionIndex = 0;
             Main.updateGraphics(false, true);
+            // l'aspirobot utilise ses "capteurs" pour mettre à jour "beliefs"
             sensors.observe();
+            // decide des intentions suivant le mode de recherche
             switch (decideMode) {
                 case "n_w":
                     intentions = decideN_W();
@@ -59,6 +70,9 @@ public class Aspirobot extends Thread {
                     break;
             }
             for (char c : intentions) {
+                /*
+                parcours les intentions pour les faire executer par les effecteurs de l'aspirobot
+                 */
                 switch (c) {
                     case Constants.SUCK:
                         effectors.suck();
@@ -72,6 +86,9 @@ public class Aspirobot extends Thread {
                 }
                 Main.updateGraphics(true, false);
                 intentionIndex++;
+                /*
+                si le nombre d'intentions depasse la limite les intententions apres cette limite sont ignores
+                 */
                 if (intentionIndex >= limit) {
                     break;
                 }
@@ -92,7 +109,7 @@ public class Aspirobot extends Thread {
         return false;
     }
 
-    private LinkedList<Character> decideN_W() { //Exploration non informée en largeur
+    private LinkedList<Character> decideN_W() { //Exploration non informee en largeur
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         if(initDecide(knownStates,notVisited,false)){
@@ -125,7 +142,7 @@ public class Aspirobot extends Thread {
         return new LinkedList<>();
     }
 
-    private LinkedList<Character> decideN_D() { //Exploration non informée en profondeur
+    private LinkedList<Character> decideN_D() { //Exploration non informee en profondeur
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         if(initDecide(knownStates,notVisited,false)){
@@ -161,7 +178,7 @@ public class Aspirobot extends Thread {
         return new LinkedList<>();
     }
 
-    private LinkedList<Character> decideI_BF() {    // Exploration informée best first
+    private LinkedList<Character> decideI_BF() {    // Exploration informee best first
         LinkedList<TreeState> knownStates = new LinkedList<>();
         LinkedList<Node> notVisited = new LinkedList<>();
         if (initDecide(knownStates, notVisited, true)) {
@@ -178,7 +195,7 @@ public class Aspirobot extends Thread {
                 if (desires(n.treeState)) {
                     return n.traceBack();
                 }
-                n.treeState.computeScore(); // Calcul de la désirabilité de l'état
+                n.treeState.computeScore(); // Calcul de la desirabilite de l'etat
                 b = true;
                 for (TreeState ts : knownStates) {
                     if (n.treeState.equals(ts)) {

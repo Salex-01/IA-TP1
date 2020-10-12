@@ -7,6 +7,9 @@ public class Effectors {
         bot = b;
     }
 
+    /*
+    fait bouger l'aspirobot dans la direction d donnee en argument et augment le score du coup electrique
+     */
     void move(char d) {
         e.score += Constants.electricityCost;
         switch (d) {
@@ -25,6 +28,9 @@ public class Effectors {
         }
     }
 
+    /*
+    recupere le bijou se trouvant à la position de l'aspiriobot et modifie le score
+     */
     void pick() {
         e.score += Constants.electricityCost;
         if ((e.map[bot.posX][bot.posY] & Constants.JEWEL) != 0) {
@@ -33,6 +39,9 @@ public class Effectors {
         }
     }
 
+    /*
+    aspire la poussiere se trouvant à la position de l'aspiriobot et modifie le score
+     */
     void suck() {
         e.score += Constants.electricityCost;
         if ((e.map[bot.posX][bot.posY] & Constants.JEWEL) != 0) {
