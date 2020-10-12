@@ -21,8 +21,8 @@ public class Constants {
         return res;
     }
 
-    static double dustScore = 10;
-    static double jewelScore = 10;
+    static double dustScore = 1;
+    static double jewelScore = 1;
 
     static double dustBonus = 5;
     static double jewelBonus = 2;
